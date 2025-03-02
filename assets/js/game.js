@@ -34,12 +34,12 @@ let audioManager;
 class AudioManager {
     constructor() {
         this.sounds = {
-            theme: new Audio('/assets/audio/theme-a.mp3'),
-            rotate: new Audio('/assets/audio/rotate.mp3'),
-            clear: new Audio('/assets/audio/clear.mp3'),
-            drop: new Audio('/assets/audio/drop.mp3'),
-            levelup: new Audio('/assets/audio/levelup.mp3'),
-            gameover: new Audio('/assets/audio/gameover.mp3')
+            theme: new Audio('assets/audio/theme-a.mp3'),
+            rotate: new Audio('assets/audio/rotate.mp3'),
+            clear: new Audio('assets/audio/clear.mp3'),
+            drop: new Audio('assets/audio/drop.mp3'),
+            levelup: new Audio('assets/audio/levelup.mp3'),
+            gameover: new Audio('assets/audio/gameover.mp3')
         };
         // Loop the theme music
         this.sounds.theme.loop = true;
