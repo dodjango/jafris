@@ -485,6 +485,9 @@ function checkCollision() {
 }
 
 function placePiece() {
+    // Don't proceed if game is already over
+    if (gameOver) return;
+    
     for (let y = 0; y < currentPiece.shape.length; y++) {
         for (let x = 0; x < currentPiece.shape[y].length; x++) {
             if (currentPiece.shape[y][x] === 1) {
@@ -497,9 +500,11 @@ function placePiece() {
     
     if (clearRows()) {
         setTimeout(() => {
-            spawnPiece();
-            if (checkCollision()) { 
-                handleGameOver();
+            if (!gameOver) {  // Check again after timeout
+                spawnPiece();
+                if (checkCollision()) { 
+                    handleGameOver();
+                }
             }
         }, 100);
     } else {
@@ -511,6 +516,8 @@ function placePiece() {
 }
 
 function handleGameOver() {
+    if (gameOver) return;  // Prevent multiple calls
+    
     gameOver = true;
     noLoop();
     audioManager.stopTheme();
