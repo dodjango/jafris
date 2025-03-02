@@ -334,8 +334,10 @@ function restartGame() {
     clearInterval(dropIntervalId);
     clearInterval(moveIntervalId);
     
+    // Reset all game states
     isPaused = false;
     gameOver = false;
+    gameStarted = true;  // Set gameStarted to true
     currentDirection = 0;
     isSpacePressed = false;
     document.getElementById('pauseBtn').textContent = 'Pause';
@@ -356,6 +358,9 @@ function restartGame() {
     level = 1;
     linesCleared = 0;
     updateScoreDisplay();
+    
+    // Start the theme music
+    audioManager.playTheme();
 }
 
 function spawnPiece() {
@@ -497,7 +502,13 @@ function keyPressed() {
         return;
     }
     
-    if (gameOver) return;
+    if (gameOver) {
+        if (keyCode === ENTER) {
+            restartGame();
+            return;
+        }
+        return;
+    }
     
     if (keyCode === LEFT_ARROW) {
         if (currentDirection !== -1) {
