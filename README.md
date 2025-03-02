@@ -8,10 +8,12 @@ Try the game here: [https://dodjango.github.io/jafris/](https://dodjango.github.
 An implementation of the classic Tetris game built with Vanilla JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
 No backend is used, so the game is static and can be hosted on any static file hosting service. For development, I used Flask to serve the game.
 
+![Jafris Game Screenshot](screenshot.png)
+
+The name "Jafris" is a tribute to both my sons Jacob and Frederik, combining the first two letters of their names (Ja-Fr) with the "-is" suffix from the original game "Tetris".
+
 ## Project Origin
 This project was created during a period of illness, where I experimented with AI-assisted development using [Cursor IDE](https://cursor.sh/)'s AI agent mode while recovering on my couch. The very first code of the game was actually created using Perplexity AI app on my iPhone and sent to my computer through a terminal app. However, as development progressed, I switched to using Cursor IDE on my notebook which proved to be much more comfortable and efficient. The entire codebase was generated through AI prompting, where I described the desired gameplay mechanics, visual aesthetics, and features. This serves as an interesting example of how AI can be used as a programming partner, with human creativity and direction guiding the AI to create a fully functional game. The result is a complete Tetris clone that demonstrates the capabilities of modern AI-assisted development.
-
-![Jafris Game Screenshot](screenshot.png)
 
 ## Features
 - Classic Tetris gameplay mechanics
