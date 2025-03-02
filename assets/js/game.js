@@ -142,6 +142,7 @@ function draw() {
     drawGrid();
     
     if (!gameOver) {
+        drawGhostPiece();  // Draw ghost piece before current piece
         drawPiece();
         drawPreview();
     }
@@ -262,6 +263,45 @@ function drawPiece() {
             }
         }
     }
+}
+
+function drawGhostPiece() {
+    if (!gameStarted || gameOver || !currentPiece) return;
+    
+    const originalY = currentPiece.y;
+    currentPiece.y = findLowestPosition();
+    
+    // Draw ghost piece with semi-transparent effect
+    push();
+    for (let y = 0; y < currentPiece.shape.length; y++) {
+        for (let x = 0; x < currentPiece.shape[y].length; x++) {
+            if (currentPiece.shape[y][x] === 1) {
+                // Draw ghost piece outline
+                stroke(0, 255, 242, 40);
+                noFill();
+                rect(
+                    (currentPiece.x + x) * blockSize,
+                    (currentPiece.y + y) * blockSize,
+                    blockSize,
+                    blockSize
+                );
+                
+                // Add subtle glow effect
+                noFill();
+                stroke(0, 255, 242, 20);
+                rect(
+                    (currentPiece.x + x) * blockSize - 1,
+                    (currentPiece.y + y) * blockSize - 1,
+                    blockSize + 2,
+                    blockSize + 2
+                );
+            }
+        }
+    }
+    pop();
+    
+    // Reset position
+    currentPiece.y = originalY;
 }
 
 function togglePause() {
@@ -393,46 +433,100 @@ function rgba(r, g, b, a) {
     return color(r, g, b, a * 255);
 }
 
+function findLowestPosition() {
+    let lowestY = currentPiece.y;
+    
+    // Keep moving down until collision
+    while (!checkCollision()) {
+        currentPiece.y++;
+    }
+    
+    // Move back up one step since we hit collision
+    currentPiece.y--;
+    
+    // Store the lowest valid position
+    const lowestPosition = currentPiece.y;
+    
+    // Reset to original position
+    currentPiece.y = lowestY;
+    
+    return lowestPosition;
+}
+
+function hardDrop() {
+    if (!gameStarted || isPaused || gameOver) return;
+    
+    const startY = currentPiece.y;
+    currentPiece.y = findLowestPosition();
+    
+    // Calculate score based on distance dropped
+    const cellsDropped = currentPiece.y - startY;
+    score += cellsDropped * 2; // 2 points per cell for hard drop
+    
+    // Visual feedback for hard drop
+    push();
+    stroke(0, 255, 242, 200);
+    strokeWeight(2);
+    for (let y = 0; y < currentPiece.shape.length; y++) {
+        for (let x = 0; x < currentPiece.shape[y].length; x++) {
+            if (currentPiece.shape[y][x] === 1) {
+                line(
+                    (currentPiece.x + x) * blockSize + blockSize/2,
+                    startY * blockSize,
+                    (currentPiece.x + x) * blockSize + blockSize/2,
+                    currentPiece.y * blockSize
+                );
+            }
+        }
+    }
+    pop();
+    
+    updateScoreDisplay();
+    
+    // Place the piece immediately
+    placePiece();
+    audioManager.playSound('drop');
+}
+
 function keyPressed() {
-    if (!gameStarted || isPaused || gameOver) return;  // Added gameOver check
+    if (!gameStarted || isPaused || gameOver) return;
     
     if (keyCode === LEFT_ARROW) {
-        if (currentDirection !== -1) {  // Only set up interval if not already moving left
+        if (currentDirection !== -1) {
             currentDirection = -1;
             movePiece(-1);
             clearInterval(moveIntervalId);
             moveIntervalId = setInterval(() => movePiece(-1), normalMoveInterval);
         }
     } else if (keyCode === RIGHT_ARROW) {
-        if (currentDirection !== 1) {  // Only set up interval if not already moving right
+        if (currentDirection !== 1) {
             currentDirection = 1;
             movePiece(1);
             clearInterval(moveIntervalId);
             moveIntervalId = setInterval(() => movePiece(1), normalMoveInterval);
         }
-    } else if (keyCode === DOWN_ARROW || keyCode === 32) { // Down arrow or Space bar
+    } else if (keyCode === DOWN_ARROW) { // Soft drop
         if (!isSpacePressed) {
             isSpacePressed = true;
             clearInterval(dropIntervalId);
-            dropIntervalId = setInterval(() => dropPiece(), getDropSpeed(level - 1) / 20); // 20x faster
+            dropIntervalId = setInterval(() => {
+                if (dropPiece()) {  // Only add score if piece actually moved down
+                    score += 1;     // 1 point per cell for soft drop
+                    updateScoreDisplay();
+                }
+            }, getDropSpeed(level - 1) / 10); // 10x faster for soft drop
         }
+    } else if (keyCode === 32) { // Space bar - Hard drop
+        hardDrop();
     } else if (keyCode === UP_ARROW) {
         rotatePiece();
-    }
-    
-    if (keyCode === DOWN_ARROW) {
-        score += 1; // Add 1 point for soft drop
-        updateScoreDisplay();
-    } else if (keyCode === 32) { // Space bar
-        score += 2; // Add 2 points for hard drop
-        updateScoreDisplay();
     }
 }
 
 function keyReleased() {
-    if (gameOver) return;  // Added gameOver check
+    if (gameOver) return;
     
-    if (keyCode === 32 || keyCode === DOWN_ARROW) { // Space bar or Down arrow
+    if (keyCode === DOWN_ARROW) { // Only soft drop should reset speed
         isSpacePressed = false;
         clearInterval(dropIntervalId);
         dropIntervalId = setInterval(() => dropPiece(), getDropSpeed(level - 1));
@@ -460,12 +554,15 @@ function movePiece(dir) {
 function dropPiece() {
     if (!gameStarted || isPaused) return;
     
+    const previousY = currentPiece.y;
     currentPiece.y++;
 
     if (checkCollision()) {
-        currentPiece.y--;
+        currentPiece.y = previousY;
         placePiece();
+        return false;
     }
+    return true;
 }
 
 function rotatePiece() {
