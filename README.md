@@ -1,4 +1,4 @@
-# Jafris - Modern Tetris Clone
+# Jafris - Tetris Clone
 
 An implementation of the classic Tetris game built with Python (Flask) backend and JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
 
