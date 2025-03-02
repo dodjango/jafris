@@ -1,5 +1,7 @@
 # Jafris - Tetris Clone
 
+[![GitHub Pages](https://img.shields.io/github/actions/workflow/status/dodjango/jafris/pages.yml?label=GitHub%20Pages)](https://dodjango.github.io/jafris/)
+
 Try the game here: [https://dodjango.github.io/jafris/](https://dodjango.github.io/jafris/)
 
 An implementation of the classic Tetris game built with Vanilla JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
