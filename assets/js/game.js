@@ -140,8 +140,11 @@ function draw() {
     
     background(16, 20, 28);
     drawGrid();
-    drawPiece();
-    drawPreview();
+    
+    if (!gameOver) {
+        drawPiece();
+        drawPreview();
+    }
     
     if (isPaused) {
         // Create strong blur effect
@@ -190,6 +193,32 @@ function draw() {
         noStroke();
         text('PAUSED', width/2, height/2);
         
+        pop();
+    }
+    
+    if (gameOver) {
+        // Draw game over overlay
+        push();
+        // Semi-transparent overlay
+        noStroke();
+        fill(16, 20, 28, 200);
+        rect(0, 0, width, height);
+        
+        // Draw game over text with glow effect
+        textSize(40);
+        textAlign(CENTER, CENTER);
+        
+        // Outer glow
+        for (let i = 6; i > 0; i--) {
+            noFill();
+            stroke(0, 255, 242, 20);
+            text('GAME OVER', width/2, height/2);
+        }
+        
+        // Main text
+        fill(0, 255, 242);
+        noStroke();
+        text('GAME OVER', width/2, height/2);
         pop();
     }
 }
@@ -521,28 +550,17 @@ function handleGameOver() {
     if (gameOver) return;  // Prevent multiple calls
     
     gameOver = true;
-    noLoop();
     audioManager.stopTheme();
     audioManager.playSound('gameover');
     console.log("Game Over!");
     
-    // Draw game over text with glow effect
-    push();
-    textSize(40);
-    textAlign(CENTER, CENTER);
-    
-    // Add glow effect
-    for (let i = 6; i > 0; i--) {
-        noFill();
-        stroke(0, 255, 242, 20);
-        text('GAME OVER', width/2, height/2);
-    }
-    
-    // Main text
-    fill(0, 255, 242);
-    noStroke();
-    text('GAME OVER', width/2, height/2);
-    pop();
+    // Clear any active intervals
+    clearInterval(dropIntervalId);
+    clearInterval(moveIntervalId);
+    moveIntervalId = null;
+
+    // Stop the draw loop
+    noLoop();
 }
 
 function clearRows() {
