@@ -2,6 +2,8 @@
 
 An implementation of the classic Tetris game built with Python (Flask) backend and JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
 
+![Jafris Game Screenshot](screenshot.png)
+
 ## Features
 - Classic Tetris gameplay mechanics
 - Responsive design for desktop devices
@@ -29,6 +31,7 @@ jafris/
 │   │   ├── levelup.mp3
 │   │   └── gameover.mp3
 │   └── index.html     # Main game page
+├── screenshot.png     # Game screenshot
 └── README.md
 ```
 
