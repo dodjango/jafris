@@ -28,6 +28,9 @@ let currentDirection = 0;
 let isPaused = false;
 let gameOver = false;
 let gameStarted = false;
+let showingQuitDialog = false;
+let storedDropInterval = null;  // Store interval timing when dialog shows
+let storedMoveInterval = null;
 
 let audioManager;
 
@@ -87,6 +90,74 @@ class AudioManager {
     }
 }
 
+function createQuitDialog() {
+    const dialog = document.createElement('div');
+    dialog.id = 'quit-dialog';
+    dialog.style.display = 'none';
+    dialog.innerHTML = `
+        <div class="dialog-content">
+            <h2>Quit Game?</h2>
+            <p>Are you sure you want to quit the game?</p>
+            <div class="dialog-buttons">
+                <button id="quit-yes">Yes</button>
+                <button id="quit-no">No</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(dialog);
+
+    // Add event listeners for the buttons
+    document.getElementById('quit-yes').addEventListener('click', () => {
+        hideQuitDialog();
+        quitGame();
+    });
+    
+    document.getElementById('quit-no').addEventListener('click', () => {
+        hideQuitDialog();
+    });
+}
+
+function showQuitDialog() {
+    if (!showingQuitDialog) {
+        showingQuitDialog = true;
+        document.getElementById('quit-dialog').style.display = 'flex';
+        
+        // Store and clear the intervals if game is running
+        if (gameStarted && !gameOver && !isPaused) {
+            // Store current intervals
+            if (dropIntervalId) {
+                storedDropInterval = getDropSpeed(level - 1);
+                clearInterval(dropIntervalId);
+                dropIntervalId = null;
+            }
+            if (moveIntervalId) {
+                storedMoveInterval = normalMoveInterval;
+                clearInterval(moveIntervalId);
+                moveIntervalId = null;
+            }
+        }
+    }
+}
+
+function hideQuitDialog() {
+    showingQuitDialog = false;
+    document.getElementById('quit-dialog').style.display = 'none';
+    
+    // Restore the intervals if game was running
+    if (gameStarted && !gameOver && !isPaused) {
+        // Restore drop interval
+        if (storedDropInterval !== null) {
+            dropIntervalId = setInterval(() => dropPiece(), storedDropInterval);
+            storedDropInterval = null;
+        }
+        // Restore move interval if there was one
+        if (storedMoveInterval !== null && currentDirection !== 0) {
+            moveIntervalId = setInterval(() => movePiece(currentDirection), storedMoveInterval);
+            storedMoveInterval = null;
+        }
+    }
+}
+
 function setup() {
     let canvas = createCanvas(400, 800);
     canvas.parent('game-canvas');
@@ -100,8 +171,17 @@ function setup() {
     document.getElementById('playBtn').addEventListener('click', startGame);
     document.getElementById('pauseBtn').addEventListener('click', togglePause);
     document.getElementById('restartBtn').addEventListener('click', restartGame);
-    document.getElementById('quitBtn').addEventListener('click', quitGame);
+    document.getElementById('quitBtn').addEventListener('click', () => {
+        if (gameStarted && !gameOver) {
+            showQuitDialog();
+        } else {
+            quitGame();
+        }
+    });
     document.getElementById('muteBtn').addEventListener('click', toggleMute);
+
+    // Create quit dialog
+    createQuitDialog();
 
     // Initialize all buttons as disabled except Play
     document.getElementById('playBtn').disabled = false;
@@ -459,7 +539,7 @@ function findLowestPosition() {
 }
 
 function hardDrop() {
-    if (!gameStarted || isPaused || gameOver) return;
+    if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
     
     const startY = currentPiece.y;
     currentPiece.y = findLowestPosition();
@@ -494,6 +574,13 @@ function hardDrop() {
 }
 
 function keyPressed() {
+    if (showingQuitDialog) {
+        if (keyCode === ESCAPE) {
+            hideQuitDialog();
+        }
+        return;
+    }
+
     if (!gameStarted) {
         if (keyCode === ENTER) {
             startGame();
@@ -511,6 +598,11 @@ function keyPressed() {
             quitGame();
             return;
         }
+        return;
+    }
+    
+    if (keyCode === ESCAPE) {
+        showQuitDialog();
         return;
     }
     
@@ -567,7 +659,7 @@ function keyReleased() {
 }
 
 function movePiece(dir) {
-    if (!gameStarted || isPaused || gameOver) return;  // Added gameOver check
+    if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
     
     currentPiece.x += dir;
 
@@ -577,7 +669,7 @@ function movePiece(dir) {
 }
 
 function dropPiece() {
-    if (!gameStarted || isPaused) return;
+    if (!gameStarted || isPaused || showingQuitDialog) return;
     
     const previousY = currentPiece.y;
     currentPiece.y++;
@@ -591,7 +683,7 @@ function dropPiece() {
 }
 
 function rotatePiece() {
-    if (!gameStarted || isPaused || gameOver) return;  // Added gameOver check
+    if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
     
     const rotated = [];
     
