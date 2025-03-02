@@ -507,6 +507,10 @@ function keyPressed() {
             restartGame();
             return;
         }
+        if (keyCode === ESCAPE) {
+            quitGame();
+            return;
+        }
         return;
     }
     
