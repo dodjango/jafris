@@ -2,7 +2,8 @@
 
 Try the game here: [https://dodjango.github.io/jafris/](https://dodjango.github.io/jafris/)
 
-An implementation of the classic Tetris game built with Python (Flask) backend and JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
+An implementation of the classic Tetris game built with Vanilla JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
+No backend is used, so the game is static and can be hosted on any static file hosting service. For development, I used Flask to serve the game.
 
 ![Jafris Game Screenshot](screenshot.png)
 
