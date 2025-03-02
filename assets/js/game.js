@@ -489,7 +489,15 @@ function hardDrop() {
 }
 
 function keyPressed() {
-    if (!gameStarted || gameOver) return;
+    if (!gameStarted) {
+        if (keyCode === ENTER) {
+            startGame();
+            return;
+        }
+        return;
+    }
+    
+    if (gameOver) return;
     
     if (keyCode === LEFT_ARROW) {
         if (currentDirection !== -1) {
