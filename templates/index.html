@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tetris Neo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        .game-container {
+            display: flex;
+            gap: 40px;
+            padding: 20px;
+            align-items: center;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="neo-container">
+        <h1>Tetris Neo</h1>
+        <div class="game-container">
+            <div id="game-canvas"></div>
+            <div class="game-info">
+                <div class="score-container">
+                    <h3>Score</h3>
+                    <div id="score-display">0</div>
+                    <div id="level-display">Level: 1 (0 lines)</div>
+                </div>
+                <div class="preview-container">
+                    <h3>Next Piece</h3>
+                    <div id="piece-preview"></div>
+                </div>
+                <div class="controls">
+                    <button id="playBtn">Play</button>
+                    <button id="pauseBtn" disabled>Pause</button>
+                    <button id="restartBtn" disabled>Restart</button>
+                    <button id="quitBtn" disabled>Quit</button>
+                    <button id="muteBtn">Mute</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="static/js/game.js"></script>
+</body>
+</html> 
