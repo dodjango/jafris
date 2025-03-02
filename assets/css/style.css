@@ -229,3 +229,55 @@ button:disabled {
 #quit-dialog button:hover {
     background: rgba(0, 255, 242, 0.2);
 }
+
+.controls-info {
+    background: rgba(16, 20, 28, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 255, 242, 0.1);
+    margin-top: 20px;
+    text-align: center;
+}
+
+.controls-info h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #00fff2;
+}
+
+.controls-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.controls-list li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 5px;
+}
+
+.key {
+    background: rgba(0, 255, 242, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 255, 242, 0.3);
+    font-size: 0.9em;
+    min-width: 30px;
+    text-align: center;
+}
+
+.key-spacebar {
+    min-width: 80px;
+}
+
+.control-action {
+    color: rgba(0, 255, 242, 0.8);
+}

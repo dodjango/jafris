@@ -266,13 +266,64 @@ function draw() {
         for (let i = 6; i > 0; i--) {
             noFill();
             stroke(0, 255, 242, 20);
-            text('PAUSED', width/2, height/2);
+            text('PAUSED', width/2, height/3);
         }
         
         // Main text
         fill(0, 255, 242);
         noStroke();
-        text('PAUSED', width/2, height/2);
+        text('PAUSED', width/2, height/3);
+
+        // Draw controls info box
+        textSize(16);
+        textAlign(CENTER, CENTER);
+        const controls = [
+            ['←/→', 'Move Left/Right'],
+            ['↑', 'Rotate'],
+            ['↓', 'Soft Drop'],
+            ['Space', 'Hard Drop'],
+            ['P', 'Pause/Resume'],
+            ['Enter', 'Start/Restart'],
+            ['Esc', 'Quit']
+        ];
+
+        const boxWidth = 300;
+        const boxHeight = 250;
+        const boxX = width/2 - boxWidth/2;
+        const boxY = height/2 - boxHeight/2 + 50;
+
+        // Draw box background with glow
+        fill(16, 20, 28, 200);
+        stroke(0, 255, 242, 64);
+        rect(boxX, boxY, boxWidth, boxHeight, 10);
+
+        // Draw box title
+        textSize(20);
+        fill(0, 255, 242);
+        noStroke();
+        text('GAME CONTROLS', width/2, boxY + 30);
+
+        // Draw controls list
+        textSize(16);
+        textAlign(LEFT, CENTER);
+        controls.forEach((control, index) => {
+            const yPos = boxY + 70 + index * 25;
+            
+            // Draw key background
+            fill(0, 255, 242, 32);
+            stroke(0, 255, 242, 64);
+            rect(boxX + 40, yPos - 10, 60, 20, 5);
+            
+            // Draw key text
+            fill(0, 255, 242);
+            noStroke();
+            textAlign(CENTER, CENTER);
+            text(control[0], boxX + 70, yPos);
+            
+            // Draw action text
+            textAlign(LEFT, CENTER);
+            text(control[1], boxX + 120, yPos);
+        });
         
         pop();
     }
@@ -605,6 +656,15 @@ function keyPressed() {
         showQuitDialog();
         return;
     }
+
+    if (keyCode === 80) { // 'P' key for pause/resume
+        togglePause();
+        return;
+    }
+    
+    if (isPaused) { // Block all other keys when paused
+        return;
+    }
     
     if (keyCode === LEFT_ARROW) {
         if (currentDirection !== -1) {
@@ -635,8 +695,6 @@ function keyPressed() {
         hardDrop();
     } else if (keyCode === UP_ARROW) {
         rotatePiece();
-    } else if (keyCode === 80) { // 'P' key for pause/resume
-        togglePause();
     }
 }
 
