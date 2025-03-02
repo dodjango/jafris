@@ -17,42 +17,55 @@ An implementation of the classic Tetris game built with Python (Flask) backend a
 ## Project Structure
 ```
 jafris/
-├── app.py             # Flask server
-├── static/
+├── dev/
+│   └── app.py           # Flask development server
+├── assets/
 │   ├── js/
-│   │   └── game.js    # Game logic and controls
+│   │   └── game.js      # Game logic and controls
 │   ├── css/
-│   │   └── style.css  # Neon-themed styling
-│   ├── audio/         # Game sound effects
-│   │   ├── theme-a.mp3
-│   │   ├── rotate.mp3
-│   │   ├── clear.mp3
-│   │   ├── drop.mp3
-│   │   ├── levelup.mp3
-│   │   └── gameover.mp3
-│   └── index.html     # Main game page
-├── screenshot.png     # Game screenshot
+│   │   └── style.css    # Neon-themed styling
+│   └── audio/           # Game sound effects
+│       ├── theme-a.mp3
+│       ├── rotate.mp3
+│       ├── clear.mp3
+│       ├── drop.mp3
+│       ├── levelup.mp3
+│       └── gameover.mp3
+├── index.html           # Main game page
+├── screenshot.png       # Game screenshot
 └── README.md
 ```
 
 ## Prerequisites
-- Python 3.x
-- Flask
 - Modern web browser (Chrome, Firefox, Safari, or Edge)
+- Python 3.x and Flask (for development only)
 
-## Installation
+## Development
 
 1. Install Flask:
    ```bash
    pip install flask
    ```
 
-2. Start the server:
+2. Start the development server:
    ```bash
+   cd dev
    python app.py
    ```
 
 3. Open your browser and navigate to [http://localhost:5000](http://localhost:5000)
+
+## Deployment
+The game can be deployed on any static file hosting service:
+
+1. GitHub Pages:
+   - Push the repository to GitHub
+   - Enable GitHub Pages in repository settings
+   - Select the main branch as source
+
+2. Any static file host:
+   - Upload all files except the `dev` directory
+   - Configure your web server to serve `index.html` as the default page
 
 ## Controls
 - ←/→ : Move piece left/right
@@ -69,20 +82,11 @@ jafris/
 - Soft drop: 1 point per cell
 - Hard drop: 2 points per cell
 
-## Features
-- Real-time score tracking
-- Level progression system
-- Next piece preview
-- Background music and sound effects
-- Mute option
-- Pause/Play/Restart functionality
-
-## Development
-The game is built using:
-- Flask for the backend server
+## Development Stack
 - Vanilla JavaScript for game logic
 - HTML5 Canvas for rendering
 - CSS3 for neon styling and animations
 - Web Audio API for sound effects
+- Flask for development server (optional)
 
 Enjoy playing!
