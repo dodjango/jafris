@@ -89,4 +89,15 @@ The game can be deployed on any static file hosting service:
 - Web Audio API for sound effects
 - Flask for development server (optional)
 
+## Audio Credits
+All sound effects and music are sourced from [Freesound.org](https://freesound.org/) under various Creative Commons licenses:
+
+### Sound Effects
+- `theme-a.mp3` - [Tetris Theme - Korobeiniki - Rearranged - Arr. for Strings](https://freesound.org/s/718634/) by Author
+- `rotate.mp3` - [Warping](https://freesound.org/s/185849/) by LloydEvans09
+- `clear.mp3` - [Chord 12](https://freesound.org/s/128818/) by mtcband
+- `drop.mp3` - [Bottle Cap Drop](https://freesound.org/s/369707/) by Mrguff
+- `levelup.mp3` - [10183 level up shock ding.wav](https://freesound.org/s/577392/) by Robinhood76
+- `gameover.mp3` - [Game Over 01.wav](https://freesound.org/s/345666/) by MATRIXXX_
+
 Enjoy playing!
