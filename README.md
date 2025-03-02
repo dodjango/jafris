@@ -1,5 +1,7 @@
 # Jafris - Tetris Clone
 
+Try the game here: [https://dodjango.github.io/jafris/](https://dodjango.github.io/jafris/)
+
 An implementation of the classic Tetris game built with Python (Flask) backend and JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
 
 ![Jafris Game Screenshot](screenshot.png)
