@@ -1,6 +1,7 @@
 # Jafris - Tetris Clone
 
 [![GitHub Pages](https://img.shields.io/website?label=GitHub%20Pages&url=https%3A%2F%2Fdodjango.github.io%2Fjafris%2F)](https://dodjango.github.io/jafris/)
+[![Deployment Status](https://img.shields.io/github/actions/workflow/status/dodjango/jafris/deploy.yml?label=Deployment)](https://github.com/dodjango/jafris/actions/workflows/deploy.yml)
 
 Try the game here: [https://dodjango.github.io/jafris/](https://dodjango.github.io/jafris/)
 
@@ -61,15 +62,22 @@ jafris/
 3. Open your browser and navigate to [http://localhost:5000](http://localhost:5000)
 
 ## Deployment
-The game can be deployed on any static file hosting service:
+The game can be deployed on any static file hosting service. The repository includes an automated GitHub Actions workflow for deployment to GitHub Pages.
 
-1. GitHub Pages:
-   - Push the repository to GitHub
-   - Enable GitHub Pages in repository settings
-   - Select the main branch as source
+1. GitHub Pages (Automated):
+   - Push your changes to the main branch
+   - The GitHub Actions workflow will automatically:
+     - Build the static site
+     - Bundle all assets (including audio files)
+     - Deploy to GitHub Pages
+   - You can monitor the deployment status in the [Actions tab](https://github.com/dodjango/jafris/actions)
 
-2. Any static file host:
-   - Upload all files except the `dev` directory
+2. Manual Deployment to Any Static Host:
+   - Copy the following files to your web server:
+     ```
+     index.html
+     assets/
+     ```
    - Configure your web server to serve `index.html` as the default page
 
 ## Controls
