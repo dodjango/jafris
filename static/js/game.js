@@ -627,13 +627,13 @@ function drawPlayPrompt() {
     for (let i = 6; i > 0; i--) {
         noFill();
         stroke(0, 255, 242, 20);
-        text('TETRIS NEO', width/2, height/2 - 50);
+        text('JAFRIS', width/2, height/2 - 50);
     }
     
     // Main text
     fill(0, 255, 242);
     noStroke();
-    text('TETRIS NEO', width/2, height/2 - 50);
+    text('JAFRIS', width/2, height/2 - 50);
     
     textSize(20);
     text('Press Play to Start', width/2, height/2 + 50);
