@@ -103,4 +103,7 @@ All sound effects and music are sourced from [Freesound.org](https://freesound.o
 - `levelup.mp3` - [10183 level up shock ding.wav](https://freesound.org/s/577392/) by Robinhood76
 - `gameover.mp3` - [Game Over 01.wav](https://freesound.org/s/345666/) by MATRIXXX_
 
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. You are free to use, modify, and distribute this code in any way you want.
+
 Enjoy playing!
