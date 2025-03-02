@@ -489,7 +489,7 @@ function hardDrop() {
 }
 
 function keyPressed() {
-    if (!gameStarted || isPaused || gameOver) return;
+    if (!gameStarted || gameOver) return;
     
     if (keyCode === LEFT_ARROW) {
         if (currentDirection !== -1) {
@@ -520,6 +520,8 @@ function keyPressed() {
         hardDrop();
     } else if (keyCode === UP_ARROW) {
         rotatePiece();
+    } else if (keyCode === 80) { // 'P' key for pause/resume
+        togglePause();
     }
 }
 
