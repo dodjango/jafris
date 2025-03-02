@@ -1,6 +1,6 @@
 # Jafris - Tetris Clone
 
-[![GitHub Pages](https://img.shields.io/github/actions/workflow/status/dodjango/jafris/pages.yml?label=GitHub%20Pages)](https://dodjango.github.io/jafris/)
+[![GitHub Pages](https://img.shields.io/website?label=GitHub%20Pages&url=https%3A%2F%2Fdodjango.github.io%2Fjafris%2F)](https://dodjango.github.io/jafris/)
 
 Try the game here: [https://dodjango.github.io/jafris/](https://dodjango.github.io/jafris/)
 
