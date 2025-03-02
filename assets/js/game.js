@@ -561,6 +561,9 @@ function handleGameOver() {
 
     // Stop the draw loop
     noLoop();
+
+    // Disable pause button in game over state
+    document.getElementById('pauseBtn').disabled = true;
 }
 
 function clearRows() {
