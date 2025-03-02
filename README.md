@@ -1,32 +1,85 @@
-# Tetris Game
+# Jafris - Modern Tetris Clone
 
-Dieses Projekt ist ein einfaches Tetris-Spiel, das in Python und JavaScript entwickelt wurde. Es läuft im Browser und unterstützt sowohl Tastatur- als auch Touch-Steuerung.
+An implementation of the classic Tetris game built with Python (Flask) backend and JavaScript frontend. Features a sleek neon-cyberpunk design with responsive controls and audio feedback.
 
-## Projektstruktur:
+## Features
+- Classic Tetris gameplay mechanics
+- Responsive design for desktop devices
+- Keyboard controls
+- Real-time score tracking and level progression
+- Dynamic difficulty scaling
+- Sound effects and background music
+- Pause/Resume functionality
+- Neon-cyberpunk visual theme
+
+## Project Structure
 ```
-tetris_game/
-├── server/
-│   └── app.py         # Flask-Server
+jafris/
+├── app.py             # Flask server
 ├── static/
 │   ├── js/
-│   │   └── game.js    # Frontend-Logik
+│   │   └── game.js    # Game logic and controls
 │   ├── css/
-│   │   └── style.css  # Styling
-│   └── index.html     # Hauptseite
-└── README.md          # Projektbeschreibung
+│   │   └── style.css  # Neon-themed styling
+│   ├── audio/         # Game sound effects
+│   │   ├── theme-a.mp3
+│   │   ├── rotate.mp3
+│   │   ├── clear.mp3
+│   │   ├── drop.mp3
+│   │   ├── levelup.mp3
+│   │   └── gameover.mp3
+│   └── index.html     # Main game page
+└── README.md
 ```
 
-## Installation:
-1. Installiere Python und Flask:
+## Prerequisites
+- Python 3.x
+- Flask
+- Modern web browser (Chrome, Firefox, Safari, or Edge)
+
+## Installation
+
+1. Install Flask:
+   ```bash
+   pip install flask
    ```
-      pip install flask
-         ```
 
-	 2. Starte den Server:
-	    ```
-	       python server/app.py
-	          ```
+2. Start the server:
+   ```bash
+   python app.py
+   ```
 
-3. Öffne die Anwendung im Browser unter [http://localhost:5000](http://localhost:5000).
+3. Open your browser and navigate to [http://localhost:5000](http://localhost:5000)
 
-Viel Spaß beim Spielen!
+## Controls
+- ←/→ : Move piece left/right
+- ↑ : Rotate piece
+- ↓ : Soft drop (faster fall)
+- Space : Hard drop (instant fall)
+- P : Pause game
+
+## Scoring System
+- Single line: 40 × level
+- Double line: 100 × level
+- Triple line: 300 × level
+- Tetris (4 lines): 1200 × level
+- Soft drop: 1 point per cell
+- Hard drop: 2 points per cell
+
+## Features
+- Real-time score tracking
+- Level progression system
+- Next piece preview
+- Background music and sound effects
+- Mute option
+- Pause/Play/Restart functionality
+
+## Development
+The game is built using:
+- Flask for the backend server
+- Vanilla JavaScript for game logic
+- HTML5 Canvas for rendering
+- CSS3 for neon styling and animations
+- Web Audio API for sound effects
+
+Enjoy playing!
