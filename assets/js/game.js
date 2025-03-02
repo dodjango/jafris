@@ -365,7 +365,7 @@ function rgba(r, g, b, a) {
 }
 
 function keyPressed() {
-    if (!gameStarted || isPaused) return;
+    if (!gameStarted || isPaused || gameOver) return;  // Added gameOver check
     
     if (keyCode === LEFT_ARROW) {
         if (currentDirection !== -1) {  // Only set up interval if not already moving left
@@ -401,6 +401,8 @@ function keyPressed() {
 }
 
 function keyReleased() {
+    if (gameOver) return;  // Added gameOver check
+    
     if (keyCode === 32 || keyCode === DOWN_ARROW) { // Space bar or Down arrow
         isSpacePressed = false;
         clearInterval(dropIntervalId);
@@ -417,7 +419,7 @@ function keyReleased() {
 }
 
 function movePiece(dir) {
-    if (!gameStarted || isPaused) return;
+    if (!gameStarted || isPaused || gameOver) return;  // Added gameOver check
     
     currentPiece.x += dir;
 
@@ -438,7 +440,7 @@ function dropPiece() {
 }
 
 function rotatePiece() {
-    if (!gameStarted || isPaused) return;
+    if (!gameStarted || isPaused || gameOver) return;  // Added gameOver check
     
     const rotated = [];
     
