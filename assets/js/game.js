@@ -217,6 +217,7 @@ function draw() {
             ['↓', 'Soft Drop'],
             ['Space', 'Hard Drop'],
             ['Esc', 'Pause/Resume'],
+            ['M', 'Mute/Unmute'],
             ['R', 'Restart (in Pause)'],
             ['Q', 'Quit (in Pause)']
         ];
@@ -534,6 +535,12 @@ function hardDrop() {
  * @param {KeyboardEvent} event - The keyboard event
  */
 function keyPressed() {
+    // Allow mute toggle in any state
+    if (keyCode === 77) { // 'M' key
+        toggleMute();
+        return;
+    }
+
     if (gameState === GameState.INITIAL) {
         if (keyCode === ENTER) {
             startGame();
