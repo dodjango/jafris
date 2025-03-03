@@ -1,3 +1,4 @@
+/* Base Styles */
 body {
     margin: 0;
     min-height: 100vh;
@@ -9,15 +10,39 @@ body {
     color: #00fff2;
 }
 
+/* Common Container Styles */
+.neo-container, .preview-container, .score-container, .controls, .controls-info {
+    background: rgba(16, 20, 28, 0.6);
+    border: 1px solid rgba(0, 255, 242, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+}
+
 .neo-container {
     background: rgba(16, 20, 28, 0.8);
-    border: 1px solid rgba(0, 255, 242, 0.2);
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 0 40px rgba(0, 255, 242, 0.1);
     backdrop-filter: blur(10px);
+    animation: glow 3s infinite;
 }
 
+/* Layout */
+.game-container {
+    display: flex;
+    gap: 40px;
+    padding: 20px;
+    align-items: center;
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* Typography */
 h1 {
     text-align: center;
     font-size: 2.5em;
@@ -28,17 +53,36 @@ h1 {
     text-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
 }
 
+h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #00fff2;
+}
+
+/* Canvas Styles */
 canvas {
     border: 2px solid rgba(0, 255, 242, 0.5);
     border-radius: 5px;
     box-shadow: 0 0 20px rgba(0, 255, 242, 0.2);
 }
 
+/* Button Styles */
 button {
-    background: rgba(0, 255, 242, 0.1);
-    color: #00fff2;
+    padding: 15px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     border: 1px solid rgba(0, 255, 242, 0.3);
     border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    transition: 0.3s;
+    background: rgba(0, 255, 242, 0.1);
+    color: #00fff2;
     box-shadow: 0 0 10px rgba(0, 255, 242, 0.1);
 }
 
@@ -52,50 +96,39 @@ button:active {
     transform: translateY(1px);
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Controls Section */
 .controls {
-    background: rgba(16, 20, 28, 0.6);
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 255, 242, 0.1);
-}
-
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 5px rgba(0, 255, 242, 0.2);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(0, 255, 242, 0.4);
-    }
-    100% {
-        box-shadow: 0 0 5px rgba(0, 255, 242, 0.2);
-    }
-}
-
-.neo-container {
-    animation: glow 3s infinite;
-}
-
-.game-info {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    align-items: stretch;
 }
 
-.preview-container {
-    background: rgba(16, 20, 28, 0.6);
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 255, 242, 0.1);
-    text-align: center;
-}
-
-.preview-container h3 {
-    margin: 0 0 15px 0;
+#playBtn {
+    background: rgba(0, 255, 242, 0.2);
     font-size: 1.2em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #00fff2;
+    padding: 20px 40px;
+    margin-bottom: 10px;
+    animation: pulse 2s infinite;
+}
+
+#muteBtn {
+    background: rgba(0, 255, 242, 0.1);
+    border-color: rgba(0, 255, 242, 0.2);
+    margin-top: 10px;
+}
+
+#muteBtn:hover {
+    background: rgba(0, 255, 242, 0.2);
+}
+
+/* Preview Section */
+.preview-container {
+    text-align: center;
 }
 
 #piece-preview {
@@ -113,47 +146,9 @@ button:active {
     max-height: 100%;
 }
 
-#playBtn {
-    background: rgba(0, 255, 242, 0.2);
-    color: #00fff2;
-    font-size: 1.2em;
-    padding: 20px 40px;
-    margin-bottom: 10px;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 5px rgba(0, 255, 242, 0.2);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(0, 255, 242, 0.6);
-    }
-    100% {
-        box-shadow: 0 0 5px rgba(0, 255, 242, 0.2);
-    }
-}
-
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Add these styles for the score container */
+/* Score Section */
 .score-container {
-    background: rgba(16, 20, 28, 0.6);
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 255, 242, 0.1);
     text-align: center;
-}
-
-.score-container h3 {
-    margin: 0 0 15px 0;
-    font-size: 1.2em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #00fff2;
 }
 
 #score-display {
@@ -169,16 +164,7 @@ button:disabled {
     opacity: 0.8;
 }
 
-#muteBtn {
-    background: rgba(0, 255, 242, 0.1);
-    border-color: rgba(0, 255, 242, 0.2);
-    margin-top: 10px;
-}
-
-#muteBtn:hover {
-    background: rgba(0, 255, 242, 0.2);
-}
-
+/* Quit Dialog */
 #quit-dialog {
     position: fixed;
     top: 0;
@@ -205,7 +191,6 @@ button:disabled {
 
 #quit-dialog h2 {
     margin: 0 0 20px 0;
-    color: rgb(0, 255, 242);
 }
 
 #quit-dialog .dialog-buttons {
@@ -217,34 +202,14 @@ button:disabled {
 
 #quit-dialog button {
     padding: 10px 30px;
-    font-size: 16px;
-    cursor: pointer;
     background: transparent;
     border: 2px solid rgb(0, 255, 242);
-    color: rgb(0, 255, 242);
-    font-family: 'Orbitron', sans-serif;
-    transition: all 0.3s;
 }
 
-#quit-dialog button:hover {
-    background: rgba(0, 255, 242, 0.2);
-}
-
+/* Controls Info */
 .controls-info {
-    background: rgba(16, 20, 28, 0.6);
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 255, 242, 0.1);
     margin-top: 20px;
     text-align: center;
-}
-
-.controls-info h3 {
-    margin: 0 0 15px 0;
-    font-size: 1.2em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #00fff2;
 }
 
 .controls-list {
@@ -280,4 +245,17 @@ button:disabled {
 
 .control-action {
     color: rgba(0, 255, 242, 0.8);
+}
+
+/* Animations */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 242, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 242, 0.4); }
+    100% { box-shadow: 0 0 5px rgba(0, 255, 242, 0.2); }
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 242, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 242, 0.6); }
+    100% { box-shadow: 0 0 5px rgba(0, 255, 242, 0.2); }
 }
