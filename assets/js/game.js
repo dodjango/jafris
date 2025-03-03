@@ -108,21 +108,6 @@ class AudioManager {
  * Adds event listeners for yes/no buttons
  */
 function createQuitDialog() {
-    const dialog = document.createElement('div');
-    dialog.id = 'quit-dialog';
-    dialog.style.display = 'none';
-    dialog.innerHTML = `
-        <div class="dialog-content">
-            <h2>Quit Game?</h2>
-            <p>Are you sure you want to quit the game?</p>
-            <div class="dialog-buttons">
-                <button id="quit-yes">Yes</button>
-                <button id="quit-no">No</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(dialog);
-
     // Add event listeners for the buttons
     document.getElementById('quit-yes').addEventListener('click', () => {
         hideQuitDialog();
