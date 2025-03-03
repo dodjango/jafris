@@ -7,6 +7,7 @@ let currentPiece;
 let nextPiece;
 let previewCanvas;
 let pauseOverlay;
+let pauseOverlayGraphics;
 
 let score = 0;
 let level = 1;
@@ -213,8 +214,9 @@ function setup() {
     previewCanvas.canvas.style.width = '100%';
     previewCanvas.canvas.style.height = '100%';
 
-    // Create pause overlay
-    pauseOverlay = createGraphics(width, height);
+    // Create the pause overlay once
+    pauseOverlayGraphics = createGraphics(width, height);
+    createPauseOverlay();
 
     // Draw initial state
     background(16, 20, 28);
@@ -244,42 +246,16 @@ function draw() {
     }
     
     if (gameState === GameState.PAUSED) {
-        // Create strong blur effect
+        // Draw the pre-rendered overlay
+        image(pauseOverlayGraphics, 0, 0);
+        
+        // Draw pause text with simplified glow
         push();
-        // First layer - strong opacity
-        noStroke();
-        fill(16, 20, 28, 240); // More opaque background
-        rect(0, 0, width, height);
-        
-        // Second layer - noise pattern
-        for (let y = 0; y < height; y += 4) {
-            for (let x = 0; x < width; x += 4) {
-                if (random() > 0.5) {
-                    fill(0, 255, 242, random(5, 15));
-                    noStroke();
-                    rect(x, y, 4, 4);
-                }
-            }
-        }
-        
-        // Third layer - scanlines
-        for (let i = 0; i < height; i += 2) {
-            stroke(0, 255, 242, 5);
-            line(0, i, width, i);
-        }
-        
-        // Fourth layer - diagonal lines
-        stroke(0, 255, 242, 8);
-        for (let i = -height; i < width; i += 20) {
-            line(i, 0, i + height, height);
-        }
-        
-        // Draw pause text with strong glow
         textSize(40);
         textAlign(CENTER, CENTER);
         
-        // Outer glow
-        for (let i = 6; i > 0; i--) {
+        // Simplified glow effect (3 layers instead of 6)
+        for (let i = 3; i > 0; i--) {
             noFill();
             stroke(0, 255, 242, 20);
             text('PAUSED', width/2, height/3);
@@ -290,9 +266,25 @@ function draw() {
         noStroke();
         text('PAUSED', width/2, height/3);
 
-        // Draw controls info box
+        // Controls box
+        const boxWidth = 300;
+        const boxHeight = 250;
+        const boxX = width/2 - boxWidth/2;
+        const boxY = height/2 - boxHeight/2 + 50;
+
+        // Draw box with simplified effect
+        fill(16, 20, 28, 200);
+        stroke(0, 255, 242, 64);
+        rect(boxX, boxY, boxWidth, boxHeight, 10);
+
+        // Draw controls content
+        textSize(20);
+        fill(0, 255, 242);
+        noStroke();
+        text('GAME CONTROLS', width/2, boxY + 30);
+
+        // Draw controls list more efficiently
         textSize(16);
-        textAlign(CENTER, CENTER);
         const controls = [
             ['←/→', 'Move Left/Right'],
             ['↑', 'Rotate'],
@@ -303,43 +295,24 @@ function draw() {
             ['Esc', 'Quit']
         ];
 
-        const boxWidth = 300;
-        const boxHeight = 250;
-        const boxX = width/2 - boxWidth/2;
-        const boxY = height/2 - boxHeight/2 + 50;
-
-        // Draw box background with glow
-        fill(16, 20, 28, 200);
-        stroke(0, 255, 242, 64);
-        rect(boxX, boxY, boxWidth, boxHeight, 10);
-
-        // Draw box title
-        textSize(20);
-        fill(0, 255, 242);
-        noStroke();
-        text('GAME CONTROLS', width/2, boxY + 30);
-
-        // Draw controls list
-        textSize(16);
-        textAlign(LEFT, CENTER);
-        controls.forEach((control, index) => {
-            const yPos = boxY + 70 + index * 25;
+        for (let i = 0; i < controls.length; i++) {
+            const yPos = boxY + 70 + i * 25;
             
-            // Draw key background
+            // Key background
             fill(0, 255, 242, 32);
             stroke(0, 255, 242, 64);
             rect(boxX + 40, yPos - 10, 60, 20, 5);
             
-            // Draw key text
+            // Key text
             fill(0, 255, 242);
             noStroke();
             textAlign(CENTER, CENTER);
-            text(control[0], boxX + 70, yPos);
+            text(controls[i][0], boxX + 70, yPos);
             
-            // Draw action text
+            // Action text
             textAlign(LEFT, CENTER);
-            text(control[1], boxX + 120, yPos);
-        });
+            text(controls[i][1], boxX + 120, yPos);
+        }
         
         pop();
     }
@@ -1115,4 +1088,35 @@ function getDropSpeed(level) {
 function toggleMute() {
     const isMuted = audioManager.toggleMute();
     document.getElementById('muteBtn').textContent = isMuted ? 'Unmute' : 'Mute';
+}
+
+// New function to create the pause overlay once
+function createPauseOverlay() {
+    pauseOverlayGraphics.clear();
+    
+    // Base layer - semi-transparent background
+    pauseOverlayGraphics.background(16, 20, 28, 240);
+    
+    // Optimized noise pattern - reduced density
+    pauseOverlayGraphics.noStroke();
+    for (let y = 0; y < height; y += 8) {  // Increased step size
+        for (let x = 0; x < width; x += 8) {
+            if (random() > 0.7) {  // Reduced number of dots
+                pauseOverlayGraphics.fill(0, 255, 242, random(5, 15));
+                pauseOverlayGraphics.rect(x, y, 8, 8);
+            }
+        }
+    }
+    
+    // Optimized scanlines - reduced density
+    pauseOverlayGraphics.stroke(0, 255, 242, 5);
+    for (let i = 0; i < height; i += 4) {  // Draw every 4th line
+        pauseOverlayGraphics.line(0, i, width, i);
+    }
+    
+    // Optimized diagonal lines - reduced quantity
+    pauseOverlayGraphics.stroke(0, 255, 242, 8);
+    for (let i = -height; i < width; i += 40) {  // Increased spacing
+        pauseOverlayGraphics.line(i, 0, i + height, height);
+    }
 }
