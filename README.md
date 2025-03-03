@@ -15,9 +15,12 @@ The name "Jafris" is a tribute to both my sons Jacob and Frederik, combining the
 ## Project Origin
 This project was created during a period of illness, where I experimented with AI-assisted development using [Cursor IDE](https://cursor.sh/)'s AI agent mode while recovering on my couch. The very first code of the game was actually created using Perplexity AI app on my iPhone and sent to my computer through a terminal app. However, as development progressed, I switched to using Cursor IDE on my notebook which proved to be much more comfortable and efficient. The entire codebase was generated through AI prompting, where I described the desired gameplay mechanics, visual aesthetics, and features. This serves as an interesting example of how AI can be used as a programming partner, with human creativity and direction guiding the AI to create a fully functional game. The result is a complete Tetris clone that demonstrates the capabilities of modern AI-assisted development.
 
+The initial code review started with commit [f3823825d435ea9f94266163316167dfa8af1855](https://github.com/dodjango/jafris/commit/f3823825d435ea9f94266163316167dfa8af1855), where several issues were identified. These issues were subsequently addressed and fixed through collaborative work with the Cursor AI agency, leading to improvements in code quality and gameplay mechanics.
+
+
+
 ## Features
 - Classic Tetris gameplay mechanics
-- Responsive design for desktop devices
 - Keyboard controls
 - Real-time score tracking and level progression
 - Dynamic difficulty scaling
