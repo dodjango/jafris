@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#00FFF2" opacity="0.8"/>
+        </marker>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="100%" height="100%" fill="#0F1318"/>
+    
+    <!-- Title -->
+    <text x="400" y="40" font-family="Arial" font-size="24" fill="#00FFF2" text-anchor="middle">Game State Diagram</text>
+    
+    <!-- States (boxes) -->
+    <g stroke="#00FFF2" stroke-width="2" fill="none">
+        <!-- INITIAL state -->
+        <rect x="50" y="150" width="150" height="80" rx="10" opacity="0.8"/>
+        <text x="125" y="195" font-family="Arial" font-size="16" fill="#00FFF2" text-anchor="middle">INITIAL</text>
+        
+        <!-- PLAYING state -->
+        <rect x="600" y="150" width="150" height="80" rx="10" opacity="0.8"/>
+        <text x="675" y="195" font-family="Arial" font-size="16" fill="#00FFF2" text-anchor="middle">PLAYING</text>
+        
+        <!-- PAUSED state -->
+        <rect x="325" y="250" width="150" height="80" rx="10" opacity="0.8"/>
+        <text x="400" y="295" font-family="Arial" font-size="16" fill="#00FFF2" text-anchor="middle">PAUSED</text>
+        
+        <!-- GAME_OVER state -->
+        <rect x="600" y="400" width="150" height="80" rx="10" opacity="0.8"/>
+        <text x="675" y="445" font-family="Arial" font-size="16" fill="#00FFF2" text-anchor="middle">GAME_OVER</text>
+    </g>
+    
+    <!-- Transitions (arrows) -->
+    <g stroke="#00FFF2" stroke-width="2" marker-end="url(#arrowhead)">
+        <!-- INITIAL to PLAYING -->
+        <path d="M 200,190 H 590" fill="none" opacity="0.8"/>
+        <text x="395" y="175" font-family="Arial" font-size="12" fill="#00FFF2" text-anchor="middle">Play/Enter</text>
+        
+        <!-- PLAYING to PAUSED -->
+        <path d="M 675,230 Q 675,290 485,290" fill="none" opacity="0.8"/>
+        <text x="580" y="270" font-family="Arial" font-size="12" fill="#00FFF2" text-anchor="middle">Esc</text>
+        
+        <!-- PAUSED to PLAYING -->
+        <path d="M 475,290 Q 600,290 600,230" fill="none" opacity="0.8"/>
+        <text x="537" y="315" font-family="Arial" font-size="12" fill="#00FFF2" text-anchor="middle">Esc/R</text>
+        
+        <!-- PLAYING to GAME_OVER -->
+        <path d="M 675,230 V 390" fill="none" opacity="0.8"/>
+        <text x="690" y="310" font-family="Arial" font-size="12" fill="#00FFF2">Collision</text>
+        
+        <!-- PAUSED to INITIAL -->
+        <path d="M 325,290 Q 125,290 125,240" fill="none" opacity="0.8"/>
+        <text x="225" y="270" font-family="Arial" font-size="12" fill="#00FFF2" text-anchor="middle">Q</text>
+        
+        <!-- GAME_OVER to INITIAL -->
+        <path d="M 600,440 Q 125,440 125,240" fill="none" opacity="0.8"/>
+        <text x="360" y="460" font-family="Arial" font-size="12" fill="#00FFF2" text-anchor="middle">Enter/Space/Esc</text>
+    </g>
+    
+    <!-- Legend -->
+    <g transform="translate(50,500)">
+        <text x="0" y="0" font-family="Arial" font-size="14" fill="#00FFF2" font-weight="bold">Legend:</text>
+        <text x="0" y="25" font-family="Arial" font-size="12" fill="#00FFF2">• User input transitions (e.g., key press)</text>
+        <text x="0" y="45" font-family="Arial" font-size="12" fill="#00FFF2">• Automatic transitions (e.g., collision)</text>
+        <text x="0" y="65" font-family="Arial" font-size="12" fill="#00FFF2">• State preserving actions</text>
+    </g>
+</svg> 
