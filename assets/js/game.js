@@ -13,21 +13,14 @@ let level = 1;
 let linesCleared = 0;
 let frameCounter = 0;
 
-const tetrominoes = [
-    [[1, 1, 1], [0, 1, 0]], // T-Form
-    [[1, 1], [1, 1]],       // O-Form
-    [[0, 1, 0], [1, 1, 1]], // L-Form
-    [[1, 0], [1, 0], [1, 1]], // J-Form
-    [[1, 1, 1, 1]]          // I-Form (long bar)
-];
+const GameState = {
+    INITIAL: 'INITIAL',    // Game not started yet
+    PLAYING: 'PLAYING',    // Game is active and running
+    PAUSED: 'PAUSED',     // Game is paused
+    GAME_OVER: 'GAME_OVER' // Game is over
+};
 
-let isSpacePressed = false;
-let normalMoveInterval = 150;  // Slower than drop speed but still responsive
-let moveIntervalId = null;
-let currentDirection = 0;
-let isPaused = false;
-let gameOver = false;
-let gameStarted = false;
+let gameState = GameState.INITIAL;
 let showingQuitDialog = false;
 let storedDropInterval = null;  // Store interval timing when dialog shows
 let storedMoveInterval = null;
@@ -41,9 +34,21 @@ window.keyPressed = keyPressed;
 window.keyReleased = keyReleased;
 
 // Make game state variables global for AudioManager
-window.gameStarted = false;
-window.gameOver = false;
-window.isPaused = false;
+window.GameState = GameState;
+window.gameState = gameState;
+
+const tetrominoes = [
+    [[1, 1, 1], [0, 1, 0]], // T-Form
+    [[1, 1], [1, 1]],       // O-Form
+    [[0, 1, 0], [1, 1, 1]], // L-Form
+    [[1, 0], [1, 0], [1, 1]], // J-Form
+    [[1, 1, 1, 1]]          // I-Form (long bar)
+];
+
+let isSpacePressed = false;
+let normalMoveInterval = 150;  // Slower than drop speed but still responsive
+let moveIntervalId = null;
+let currentDirection = 0;
 
 /**
  * AudioManager class to handle all game audio functionality
@@ -96,7 +101,7 @@ class AudioManager {
         if (this.isMuted) {
             this.stopTheme();
         } else {
-            if (gameStarted && !gameOver && !isPaused) {
+            if (gameState === GameState.PLAYING) {
                 this.playTheme();
             }
         }
@@ -144,7 +149,7 @@ function showQuitDialog() {
         document.getElementById('quit-dialog').style.display = 'flex';
         
         // Store and clear the intervals if game is running
-        if (gameStarted && !gameOver && !isPaused) {
+        if (gameState === GameState.PLAYING) {
             // Store current intervals
             if (dropIntervalId) {
                 storedDropInterval = getDropSpeed(level - 1);
@@ -168,7 +173,7 @@ function hideQuitDialog() {
     document.getElementById('quit-dialog').style.display = 'none';
     
     // Restore the intervals if game was running
-    if (gameStarted && !gameOver && !isPaused) {
+    if (gameState === GameState.PLAYING) {
         // Restore drop interval
         if (storedDropInterval !== null) {
             dropIntervalId = setInterval(() => dropPiece(), storedDropInterval);
@@ -200,7 +205,7 @@ function setup() {
     document.getElementById('pauseBtn').addEventListener('click', togglePause);
     document.getElementById('restartBtn').addEventListener('click', restartGame);
     document.getElementById('quitBtn').addEventListener('click', () => {
-        if (gameStarted && !gameOver) {
+        if (gameState === GameState.PLAYING) {
             showQuitDialog();
         } else {
             quitGame();
@@ -246,20 +251,20 @@ function setup() {
  * Updates game visuals based on current state
  */
 function draw() {
-    if (!gameStarted) {
+    if (gameState === GameState.INITIAL) {
         return; // Don't update anything until game starts
     }
     
     background(16, 20, 28);
     drawGrid();
     
-    if (!gameOver) {
+    if (gameState !== GameState.GAME_OVER) {
         drawGhostPiece();  // Draw ghost piece before current piece
         drawPiece();
         drawPreview();
     }
     
-    if (isPaused) {
+    if (gameState === GameState.PAUSED) {
         // Create strong blur effect
         push();
         // First layer - strong opacity
@@ -360,7 +365,7 @@ function draw() {
         pop();
     }
     
-    if (gameOver) {
+    if (gameState === GameState.GAME_OVER) {
         // Draw game over overlay
         push();
         // Semi-transparent overlay
@@ -438,7 +443,7 @@ function drawPiece() {
  * Draws a ghost piece showing where the current piece will land
  */
 function drawGhostPiece() {
-    if (!gameStarted || gameOver || !currentPiece) return;
+    if (!gameState === GameState.PLAYING || gameState === GameState.GAME_OVER || !currentPiece) return;
     
     const originalY = currentPiece.y;
     currentPiece.y = findLowestPosition();
@@ -481,15 +486,13 @@ function drawGhostPiece() {
  * Handles interval management and UI updates
  */
 function togglePause() {
-    setIsPaused(!isPaused);
-    const pauseBtn = document.getElementById('pauseBtn');
-    pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
-    
-    if (isPaused) {
+    if (gameState === GameState.PLAYING) {
+        gameState = GameState.PAUSED;
         clearInterval(dropIntervalId);
         clearInterval(moveIntervalId);
         audioManager.stopTheme();
-    } else {
+    } else if (gameState === GameState.PAUSED) {
+        gameState = GameState.PLAYING;
         dropIntervalId = setInterval(() => dropPiece(), getDropSpeed(level - 1));
         if (currentDirection !== 0) {
             moveIntervalId = setInterval(
@@ -499,6 +502,9 @@ function togglePause() {
         }
         audioManager.playTheme();
     }
+    
+    const pauseBtn = document.getElementById('pauseBtn');
+    pauseBtn.textContent = gameState === GameState.PAUSED ? 'Resume' : 'Pause';
 }
 
 /**
@@ -513,10 +519,8 @@ function restartGame() {
     clearInterval(dropIntervalId);
     clearInterval(moveIntervalId);
     
-    // Reset all game states
-    setIsPaused(false);
-    setGameOver(false);
-    setGameStarted(true);
+    // Reset game states
+    gameState = GameState.PLAYING;
     currentDirection = 0;
     isSpacePressed = false;
     document.getElementById('pauseBtn').textContent = 'Pause';
@@ -546,7 +550,7 @@ function restartGame() {
  * Spawns a new tetromino piece and updates the preview
  */
 function spawnPiece() {
-    if (gameOver) return;
+    if (gameState === GameState.GAME_OVER) return;
     
     currentPiece = nextPiece;
     currentPiece.x = floor(cols / 2) - 1;
@@ -572,7 +576,7 @@ function getRandomPiece() {
  * Draws the next piece preview in the preview canvas
  */
 function drawPreview() {
-    if (!previewCanvas || gameOver) return;
+    if (!previewCanvas || gameState === GameState.GAME_OVER) return;
     
     // Clear the canvas first
     previewCanvas.clear();
@@ -664,7 +668,7 @@ function findLowestPosition() {
  * Instantly moves piece to lowest possible position
  */
 function hardDrop() {
-    if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
     
     const startY = currentPiece.y;
     currentPiece.y = findLowestPosition();
@@ -710,7 +714,7 @@ function keyPressed() {
         return;
     }
 
-    if (!gameStarted) {
+    if (gameState === GameState.INITIAL) {
         if (keyCode === ENTER) {
             startGame();
             return;
@@ -718,7 +722,7 @@ function keyPressed() {
         return;
     }
     
-    if (gameOver) {
+    if (gameState === GameState.GAME_OVER) {
         if (keyCode === ENTER) {
             restartGame();
             return;
@@ -740,7 +744,7 @@ function keyPressed() {
         return;
     }
     
-    if (isPaused) { // Block all other keys when paused
+    if (gameState === GameState.PAUSED) { // Block all other keys when paused
         return;
     }
     
@@ -781,7 +785,7 @@ function keyPressed() {
  * @param {KeyboardEvent} event - The keyboard event
  */
 function keyReleased() {
-    if (gameOver) return;
+    if (gameState === GameState.GAME_OVER) return;
     
     if (keyCode === DOWN_ARROW) { // Only soft drop should reset speed
         isSpacePressed = false;
@@ -803,7 +807,7 @@ function keyReleased() {
  * @param {number} dir - Direction (-1 for left, 1 for right)
  */
 function movePiece(dir) {
-    if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
     
     currentPiece.x += dir;
 
@@ -817,7 +821,7 @@ function movePiece(dir) {
  * @returns {boolean} True if piece was moved, false if piece was placed
  */
 function dropPiece() {
-    if (!gameStarted || isPaused || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
     
     const previousY = currentPiece.y;
     currentPiece.y++;
@@ -834,7 +838,7 @@ function dropPiece() {
  * Rotates the current piece clockwise
  */
 function rotatePiece() {
-    if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
     
     const rotated = [];
     
@@ -889,7 +893,7 @@ function checkCollision() {
  */
 function placePiece() {
     // Don't proceed if game is already over
-    if (gameOver) return;
+    if (gameState === GameState.GAME_OVER) return;
     
     for (let y = 0; y < currentPiece.shape.length; y++) {
         for (let x = 0; x < currentPiece.shape[y].length; x++) {
@@ -903,7 +907,7 @@ function placePiece() {
     
     if (clearRows()) {
         setTimeout(() => {
-            if (!gameOver) {  // Check again after timeout
+            if (gameState !== GameState.GAME_OVER) {  // Check again after timeout
                 spawnPiece();
                 if (checkCollision()) { 
                     handleGameOver();
@@ -923,9 +927,9 @@ function placePiece() {
  * Stops intervals and updates UI
  */
 function handleGameOver() {
-    if (gameOver) return;  // Prevent multiple calls
+    if (gameState === GameState.GAME_OVER) return;  // Prevent multiple calls
     
-    setGameOver(true);
+    gameState = GameState.GAME_OVER;
     audioManager.stopTheme();
     audioManager.playSound('gameover');
     console.log("Game Over!");
@@ -1001,7 +1005,7 @@ function updateScoreDisplay() {
  * Initializes game state and starts intervals
  */
 function startGame() {
-    setGameStarted(true);
+    gameState = GameState.PLAYING;
     
     // Reset game stats
     score = 0;
@@ -1075,9 +1079,7 @@ function quitGame() {
     }
     
     // Reset game variables
-    setGameStarted(false);
-    setGameOver(false);
-    setIsPaused(false);
+    gameState = GameState.INITIAL;
     currentDirection = 0;
     isSpacePressed = false;
     
@@ -1134,20 +1136,4 @@ function getDropSpeed(level) {
 function toggleMute() {
     const isMuted = audioManager.toggleMute();
     document.getElementById('muteBtn').textContent = isMuted ? 'Unmute' : 'Mute';
-}
-
-// Update game state variables through these functions to ensure both module and global state are in sync
-function setGameStarted(value) {
-    gameStarted = value;
-    window.gameStarted = value;
-}
-
-function setGameOver(value) {
-    gameOver = value;
-    window.gameOver = value;
-}
-
-function setIsPaused(value) {
-    isPaused = value;
-    window.isPaused = value;
 }

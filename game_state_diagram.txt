@@ -1,0 +1,71 @@
+Game State Diagram
+================
+
+Main States:
+-----------
+╔═══════════════════╗        Press Play      ╔═══════════════════╗
+║                   ║----------------------->║                   ║
+║      INITIAL      ║                        ║      PLAYING      ║
+║                   ║<-----------------------║                   ║
+╚═══════════════════╝         Quit           ╚═══════════════════╝
+         ^                                         ^     |
+         |                                         |     |
+         |                                 Press P |     | Collision
+         |                                         |     | at spawn
+    Quit |                                         |     |
+         |                  ╔═══════════════════╗  |     |
+         |                  ║                   ║  |     |
+         +<---------------- ║      PAUSED       ║<-+     |
+         |                  ║                   ║        |
+         |                  ╚═══════════════════╝        |
+         |                                               |
+         |                                               |
+         |                                               |
+         |                                               |
+         |                                               |
+         |                                               v
+         |                               ╔═══════════════════╗
+         |                               ║                   ║
+         +<----------------------------- ║     GAME_OVER     ║
+                   Quit                  ║                   ║
+                                         ╚═══════════════════╝
+
+Legend:
+------
+→  Normal transition (user input)
+⇢  Automatic transition
+↺  State preservation
+⇝  Dialog interaction
+
+-----------------
+INITIAL    -> PLAYING:   User input (Play/Enter)
+PLAYING    -> PAUSED:    User input (P key/button)
+PLAYING    -> GAME_OVER: Automatic (collision)
+PAUSED     -> PLAYING:   User input (P key/button)
+GAME_OVER  -> PLAYING:   User input (Enter/Restart)
+
+Notes:
+------
+1. Game states:
+   INITIAL    - Title screen state (Enter/Play to start)
+   PLAYING    - Active gameplay with piece control
+   PAUSED     - Suspended state with controls display
+   GAME_OVER  - End state with restart/quit options
+
+2. State behaviors:
+   - INITIAL:    
+     * Shows title screen and game name
+     * Accepts Enter key or Play button
+     * All buttons disabled except Play
+   - PLAYING:    
+     * Full piece movement and rotation
+     * Score updates and line clearing
+     * Collision detection active
+   - PAUSED:     
+     * Game state and timers frozen
+     * Shows controls overlay
+     * Only P/Resume and Quit allowed
+   - GAME_OVER:  
+     * Final score displayed
+     * Enter to restart, Esc to quit
+     * Background effects stopped
