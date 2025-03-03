@@ -33,10 +33,6 @@ window.draw = draw;
 window.keyPressed = keyPressed;
 window.keyReleased = keyReleased;
 
-// Make game state variables global for AudioManager
-window.GameState = GameState;
-window.gameState = gameState;
-
 const tetrominoes = [
     [[1, 1, 1], [0, 1, 0]], // T-Form
     [[1, 1], [1, 1]],       // O-Form
@@ -101,9 +97,7 @@ class AudioManager {
         if (this.isMuted) {
             this.stopTheme();
         } else {
-            if (gameState === GameState.PLAYING) {
-                this.playTheme();
-            }
+            this.playTheme();
         }
         return this.isMuted;
     }
