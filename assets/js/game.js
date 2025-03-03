@@ -34,6 +34,17 @@ let storedMoveInterval = null;
 
 let audioManager;
 
+// Make p5.js functions global for proper integration
+window.setup = setup;
+window.draw = draw;
+window.keyPressed = keyPressed;
+window.keyReleased = keyReleased;
+
+// Make game state variables global for AudioManager
+window.gameStarted = false;
+window.gameOver = false;
+window.isPaused = false;
+
 /**
  * AudioManager class to handle all game audio functionality
  */
@@ -470,7 +481,7 @@ function drawGhostPiece() {
  * Handles interval management and UI updates
  */
 function togglePause() {
-    isPaused = !isPaused;
+    setIsPaused(!isPaused);
     const pauseBtn = document.getElementById('pauseBtn');
     pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
     
@@ -503,9 +514,9 @@ function restartGame() {
     clearInterval(moveIntervalId);
     
     // Reset all game states
-    isPaused = false;
-    gameOver = false;
-    gameStarted = true;  // Set gameStarted to true
+    setIsPaused(false);
+    setGameOver(false);
+    setGameStarted(true);
     currentDirection = 0;
     isSpacePressed = false;
     document.getElementById('pauseBtn').textContent = 'Pause';
@@ -914,7 +925,7 @@ function placePiece() {
 function handleGameOver() {
     if (gameOver) return;  // Prevent multiple calls
     
-    gameOver = true;
+    setGameOver(true);
     audioManager.stopTheme();
     audioManager.playSound('gameover');
     console.log("Game Over!");
@@ -990,7 +1001,7 @@ function updateScoreDisplay() {
  * Initializes game state and starts intervals
  */
 function startGame() {
-    gameStarted = true;
+    setGameStarted(true);
     
     // Reset game stats
     score = 0;
@@ -1064,9 +1075,9 @@ function quitGame() {
     }
     
     // Reset game variables
-    gameStarted = false;
-    gameOver = false;
-    isPaused = false;
+    setGameStarted(false);
+    setGameOver(false);
+    setIsPaused(false);
     currentDirection = 0;
     isSpacePressed = false;
     
@@ -1123,4 +1134,20 @@ function getDropSpeed(level) {
 function toggleMute() {
     const isMuted = audioManager.toggleMute();
     document.getElementById('muteBtn').textContent = isMuted ? 'Unmute' : 'Mute';
+}
+
+// Update game state variables through these functions to ensure both module and global state are in sync
+function setGameStarted(value) {
+    gameStarted = value;
+    window.gameStarted = value;
+}
+
+function setGameOver(value) {
+    gameOver = value;
+    window.gameOver = value;
+}
+
+function setIsPaused(value) {
+    isPaused = value;
+    window.isPaused = value;
 }
