@@ -70,9 +70,11 @@ class AudioManager {
         this.sounds.gameover.volume = 0.4;
         
         this.isMuted = false;
+        this.isThemePlaying = false;
     }
 
     playTheme() {
+        this.isThemePlaying = true;
         if (!this.isMuted) {
             this.sounds.theme.currentTime = 0;
             this.sounds.theme.play();
@@ -80,6 +82,7 @@ class AudioManager {
     }
 
     stopTheme() {
+        this.isThemePlaying = false;
         this.sounds.theme.pause();
         this.sounds.theme.currentTime = 0;
     }
@@ -94,9 +97,9 @@ class AudioManager {
     toggleMute() {
         this.isMuted = !this.isMuted;
         if (this.isMuted) {
-            this.stopTheme();
-        } else {
-            this.playTheme();
+            this.sounds.theme.pause();
+        } else if (this.isThemePlaying) {
+            this.sounds.theme.play();
         }
         return this.isMuted;
     }
@@ -125,7 +128,6 @@ function setup() {
     document.getElementById('playBtn').disabled = false;
     document.getElementById('pauseBtn').disabled = true;
     document.getElementById('quitBtn').disabled = true;
-    document.getElementById('muteBtn').disabled = true;
 
     // Create preview canvas with explicit size
     previewCanvas = createGraphics(120, 120);
@@ -842,8 +844,7 @@ function startGame() {
     document.getElementById('playBtn').style.display = 'none';
     document.getElementById('pauseBtn').disabled = false;
     document.getElementById('quitBtn').disabled = false;
-    document.getElementById('muteBtn').disabled = false;
-    
+
     // Initialize game pieces
     nextPiece = getRandomPiece();
     spawnPiece();
@@ -912,7 +913,6 @@ function quitGame() {
     document.getElementById('playBtn').disabled = false;
     document.getElementById('pauseBtn').disabled = true;
     document.getElementById('quitBtn').disabled = true;
-    document.getElementById('muteBtn').disabled = true;
     document.getElementById('pauseBtn').textContent = 'Pause';
     
     // Clear preview
