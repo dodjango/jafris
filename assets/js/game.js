@@ -45,7 +45,7 @@ const tetrominoes = [
     [[1, 1, 1, 1]]          // I-Form (long bar)
 ];
 
-let isSpacePressed = false;
+let isSoftDropActive = false;
 let normalMoveInterval = 150;  // Slower than drop speed but still responsive
 let moveIntervalId = null;
 let currentDirection = 0;
@@ -522,7 +522,7 @@ function restartGame() {
     // Reset game states
     gameState = GameState.PLAYING;
     currentDirection = 0;
-    isSpacePressed = false;
+    isSoftDropActive = false;
     document.getElementById('pauseBtn').textContent = 'Pause';
     
     // Update button states
@@ -763,8 +763,8 @@ function keyPressed() {
             moveIntervalId = setInterval(() => movePiece(1), normalMoveInterval);
         }
     } else if (keyCode === DOWN_ARROW) { // Soft drop
-        if (!isSpacePressed) {
-            isSpacePressed = true;
+        if (!isSoftDropActive) {
+            isSoftDropActive = true;
             clearInterval(dropIntervalId);
             dropIntervalId = setInterval(() => {
                 if (dropPiece()) {  // Only add score if piece actually moved down
@@ -788,7 +788,7 @@ function keyReleased() {
     if (gameState === GameState.GAME_OVER) return;
     
     if (keyCode === DOWN_ARROW) { // Only soft drop should reset speed
-        isSpacePressed = false;
+        isSoftDropActive = false;
         clearInterval(dropIntervalId);
         dropIntervalId = setInterval(() => dropPiece(), getDropSpeed(level - 1));
     } else if (keyCode === LEFT_ARROW && currentDirection === -1) {
@@ -1081,7 +1081,7 @@ function quitGame() {
     // Reset game variables
     gameState = GameState.INITIAL;
     currentDirection = 0;
-    isSpacePressed = false;
+    isSoftDropActive = false;
     
     // Reset button states
     document.getElementById('playBtn').style.display = 'block';
