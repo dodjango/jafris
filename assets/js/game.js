@@ -34,6 +34,9 @@ let storedMoveInterval = null;
 
 let audioManager;
 
+/**
+ * AudioManager class to handle all game audio functionality
+ */
 class AudioManager {
     constructor() {
         this.sounds = {
@@ -90,6 +93,10 @@ class AudioManager {
     }
 }
 
+/**
+ * Creates a dialog box for quitting the game
+ * Adds event listeners for yes/no buttons
+ */
 function createQuitDialog() {
     const dialog = document.createElement('div');
     dialog.id = 'quit-dialog';
@@ -117,6 +124,9 @@ function createQuitDialog() {
     });
 }
 
+/**
+ * Displays the quit confirmation dialog and pauses game intervals
+ */
 function showQuitDialog() {
     if (!showingQuitDialog) {
         showingQuitDialog = true;
@@ -139,6 +149,9 @@ function showQuitDialog() {
     }
 }
 
+/**
+ * Hides the quit confirmation dialog and restores game intervals
+ */
 function hideQuitDialog() {
     showingQuitDialog = false;
     document.getElementById('quit-dialog').style.display = 'none';
@@ -158,6 +171,10 @@ function hideQuitDialog() {
     }
 }
 
+/**
+ * Initializes the game canvas, grid, and UI elements
+ * Sets up event listeners and creates initial game state
+ */
 function setup() {
     let canvas = createCanvas(400, 800);
     canvas.parent('game-canvas');
@@ -213,6 +230,10 @@ function setup() {
     audioManager = new AudioManager();
 }
 
+/**
+ * Main game loop function that handles rendering
+ * Updates game visuals based on current state
+ */
 function draw() {
     if (!gameStarted) {
         return; // Don't update anything until game starts
@@ -355,6 +376,9 @@ function draw() {
     }
 }
 
+/**
+ * Draws the game grid with current block positions
+ */
 function drawGrid() {
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
@@ -369,6 +393,9 @@ function drawGrid() {
     }
 }
 
+/**
+ * Draws the current active tetromino piece
+ */
 function drawPiece() {
     for (let y = 0; y < currentPiece.shape.length; y++) {
         for (let x = 0; x < currentPiece.shape[y].length; x++) {
@@ -396,6 +423,9 @@ function drawPiece() {
     }
 }
 
+/**
+ * Draws a ghost piece showing where the current piece will land
+ */
 function drawGhostPiece() {
     if (!gameStarted || gameOver || !currentPiece) return;
     
@@ -435,6 +465,10 @@ function drawGhostPiece() {
     currentPiece.y = originalY;
 }
 
+/**
+ * Toggles the game's pause state
+ * Handles interval management and UI updates
+ */
 function togglePause() {
     isPaused = !isPaused;
     const pauseBtn = document.getElementById('pauseBtn');
@@ -456,6 +490,9 @@ function togglePause() {
     }
 }
 
+/**
+ * Restarts the game, resetting all game states and scores
+ */
 function restartGame() {
     grid = [];
     for (let i = 0; i < rows; i++) {
@@ -494,6 +531,9 @@ function restartGame() {
     audioManager.playTheme();
 }
 
+/**
+ * Spawns a new tetromino piece and updates the preview
+ */
 function spawnPiece() {
     if (gameOver) return;
     
@@ -504,6 +544,10 @@ function spawnPiece() {
     drawPreview();
 }
 
+/**
+ * Returns a random tetromino piece
+ * @returns {Object} A piece object with shape and position properties
+ */
 function getRandomPiece() {
     const index = floor(random(tetrominoes.length));
     return {
@@ -513,6 +557,9 @@ function getRandomPiece() {
     };
 }
 
+/**
+ * Draws the next piece preview in the preview canvas
+ */
 function drawPreview() {
     if (!previewCanvas || gameOver) return;
     
@@ -565,10 +612,22 @@ function drawPreview() {
     }
 }
 
+/**
+ * Creates an RGBA color value
+ * @param {number} r - Red value (0-255)
+ * @param {number} g - Green value (0-255)
+ * @param {number} b - Blue value (0-255)
+ * @param {number} a - Alpha value (0-1)
+ * @returns {p5.Color} Color object
+ */
 function rgba(r, g, b, a) {
     return color(r, g, b, a * 255);
 }
 
+/**
+ * Calculates the lowest possible position for the current piece
+ * @returns {number} The lowest valid Y position
+ */
 function findLowestPosition() {
     let lowestY = currentPiece.y;
     
@@ -589,6 +648,10 @@ function findLowestPosition() {
     return lowestPosition;
 }
 
+/**
+ * Performs a hard drop of the current piece
+ * Instantly moves piece to lowest possible position
+ */
 function hardDrop() {
     if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
     
@@ -624,6 +687,10 @@ function hardDrop() {
     audioManager.playSound('drop');
 }
 
+/**
+ * Handles keyboard press events for game controls
+ * @param {KeyboardEvent} event - The keyboard event
+ */
 function keyPressed() {
     if (showingQuitDialog) {
         if (keyCode === ESCAPE) {
@@ -698,6 +765,10 @@ function keyPressed() {
     }
 }
 
+/**
+ * Handles keyboard release events for game controls
+ * @param {KeyboardEvent} event - The keyboard event
+ */
 function keyReleased() {
     if (gameOver) return;
     
@@ -716,6 +787,10 @@ function keyReleased() {
     }
 }
 
+/**
+ * Moves the current piece horizontally
+ * @param {number} dir - Direction (-1 for left, 1 for right)
+ */
 function movePiece(dir) {
     if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
     
@@ -726,6 +801,10 @@ function movePiece(dir) {
     }
 }
 
+/**
+ * Moves the current piece down one position
+ * @returns {boolean} True if piece was moved, false if piece was placed
+ */
 function dropPiece() {
     if (!gameStarted || isPaused || showingQuitDialog) return;
     
@@ -740,6 +819,9 @@ function dropPiece() {
     return true;
 }
 
+/**
+ * Rotates the current piece clockwise
+ */
 function rotatePiece() {
     if (!gameStarted || isPaused || gameOver || showingQuitDialog) return;
     
@@ -767,6 +849,10 @@ function rotatePiece() {
     }
 }
 
+/**
+ * Checks if the current piece collides with walls or other pieces
+ * @returns {boolean} True if collision detected, false otherwise
+ */
 function checkCollision() {
     for (let y = 0; y < currentPiece.shape.length; y++) {
         for (let x = 0; x < currentPiece.shape[y].length; x++) {
@@ -787,6 +873,9 @@ function checkCollision() {
     return false;
 }
 
+/**
+ * Places the current piece on the grid and handles line clearing
+ */
 function placePiece() {
     // Don't proceed if game is already over
     if (gameOver) return;
@@ -818,6 +907,10 @@ function placePiece() {
     }
 }
 
+/**
+ * Handles game over state
+ * Stops intervals and updates UI
+ */
 function handleGameOver() {
     if (gameOver) return;  // Prevent multiple calls
     
@@ -838,6 +931,11 @@ function handleGameOver() {
     document.getElementById('pauseBtn').disabled = true;
 }
 
+/**
+ * Checks and clears completed rows
+ * Updates score and level based on cleared lines
+ * @returns {boolean} True if any rows were cleared
+ */
 function clearRows() {
     let rowsCleared = 0;
     for (let y = rows - 1; y >= 0; y--) {
@@ -879,11 +977,18 @@ function clearRows() {
     return rowsCleared > 0;
 }
 
+/**
+ * Updates the score and level display in the UI
+ */
 function updateScoreDisplay() {
     document.getElementById('score-display').textContent = score;
     document.getElementById('level-display').textContent = `Level: ${level} (${linesCleared} lines)`;
 }
 
+/**
+ * Starts a new game
+ * Initializes game state and starts intervals
+ */
 function startGame() {
     gameStarted = true;
     
@@ -911,6 +1016,9 @@ function startGame() {
     audioManager.playTheme();
 }
 
+/**
+ * Draws the initial play prompt screen
+ */
 function drawPlayPrompt() {
     push();
     // Add glow effect background
@@ -941,6 +1049,9 @@ function drawPlayPrompt() {
     pop();
 }
 
+/**
+ * Quits the current game and resets to initial state
+ */
 function quitGame() {
     // Clear intervals
     clearInterval(dropIntervalId);
@@ -990,6 +1101,11 @@ function quitGame() {
     audioManager.stopTheme();
 }
 
+/**
+ * Calculates the piece drop speed based on current level
+ * @param {number} level - Current game level
+ * @returns {number} Drop speed in milliseconds
+ */
 function getDropSpeed(level) {
     // NES Tetris speed formula (frames per grid cell)
     // Level 0-8: 48, 43, 38, 33, 28, 23, 18, 13, 8
@@ -1001,6 +1117,9 @@ function getDropSpeed(level) {
     return 6 * (1000 / 60); // About 100ms for level 9 and up
 }
 
+/**
+ * Toggles game audio mute state
+ */
 function toggleMute() {
     const isMuted = audioManager.toggleMute();
     document.getElementById('muteBtn').textContent = isMuted ? 'Unmute' : 'Mute';
