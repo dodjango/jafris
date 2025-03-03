@@ -164,48 +164,6 @@ button:disabled {
     opacity: 0.8;
 }
 
-/* Quit Dialog */
-#quit-dialog {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-#quit-dialog .dialog-content {
-    background: rgb(16, 20, 28);
-    padding: 30px;
-    border: 2px solid rgb(0, 255, 242);
-    border-radius: 10px;
-    text-align: center;
-    color: rgb(0, 255, 242);
-    font-family: 'Orbitron', sans-serif;
-    box-shadow: 0 0 20px rgba(0, 255, 242, 0.3);
-}
-
-#quit-dialog h2 {
-    margin: 0 0 20px 0;
-}
-
-#quit-dialog .dialog-buttons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-#quit-dialog button {
-    padding: 10px 30px;
-    background: transparent;
-    border: 2px solid rgb(0, 255, 242);
-}
-
 /* Controls Info */
 .controls-info {
     margin-top: 20px;

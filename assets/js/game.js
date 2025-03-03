@@ -22,9 +22,8 @@ const GameState = {
 };
 
 let gameState = GameState.INITIAL;
-let showingQuitDialog = false;
-let storedDropInterval = null;  // Store interval timing when dialog shows
-let storedMoveInterval = null;
+let dropIntervalId = null;
+let moveIntervalId = null;
 
 let audioManager;
 
@@ -44,7 +43,6 @@ const tetrominoes = [
 
 let isSoftDropActive = false;
 let normalMoveInterval = 150;  // Slower than drop speed but still responsive
-let moveIntervalId = null;
 let currentDirection = 0;
 
 /**
@@ -105,69 +103,6 @@ class AudioManager {
 }
 
 /**
- * Creates a dialog box for quitting the game
- * Adds event listeners for yes/no buttons
- */
-function createQuitDialog() {
-    // Add event listeners for the buttons
-    document.getElementById('quit-yes').addEventListener('click', () => {
-        hideQuitDialog();
-        quitGame();
-    });
-    
-    document.getElementById('quit-no').addEventListener('click', () => {
-        hideQuitDialog();
-    });
-}
-
-/**
- * Displays the quit confirmation dialog and pauses game intervals
- */
-function showQuitDialog() {
-    if (!showingQuitDialog) {
-        showingQuitDialog = true;
-        document.getElementById('quit-dialog').style.display = 'flex';
-        
-        // Store and clear the intervals if game is running
-        if (gameState === GameState.PLAYING) {
-            // Store current intervals
-            if (dropIntervalId) {
-                storedDropInterval = getDropSpeed(level - 1);
-                clearInterval(dropIntervalId);
-                dropIntervalId = null;
-            }
-            if (moveIntervalId) {
-                storedMoveInterval = normalMoveInterval;
-                clearInterval(moveIntervalId);
-                moveIntervalId = null;
-            }
-        }
-    }
-}
-
-/**
- * Hides the quit confirmation dialog and restores game intervals
- */
-function hideQuitDialog() {
-    showingQuitDialog = false;
-    document.getElementById('quit-dialog').style.display = 'none';
-    
-    // Restore the intervals if game was running
-    if (gameState === GameState.PLAYING) {
-        // Restore drop interval
-        if (storedDropInterval !== null) {
-            dropIntervalId = setInterval(() => dropPiece(), storedDropInterval);
-            storedDropInterval = null;
-        }
-        // Restore move interval if there was one
-        if (storedMoveInterval !== null && currentDirection !== 0) {
-            moveIntervalId = setInterval(() => movePiece(currentDirection), storedMoveInterval);
-            storedMoveInterval = null;
-        }
-    }
-}
-
-/**
  * Initializes the game canvas, grid, and UI elements
  * Sets up event listeners and creates initial game state
  */
@@ -183,23 +118,12 @@ function setup() {
     // Set up button listeners
     document.getElementById('playBtn').addEventListener('click', startGame);
     document.getElementById('pauseBtn').addEventListener('click', togglePause);
-    document.getElementById('restartBtn').addEventListener('click', restartGame);
-    document.getElementById('quitBtn').addEventListener('click', () => {
-        if (gameState === GameState.PLAYING) {
-            showQuitDialog();
-        } else {
-            quitGame();
-        }
-    });
+    document.getElementById('quitBtn').addEventListener('click', quitGame);
     document.getElementById('muteBtn').addEventListener('click', toggleMute);
-
-    // Create quit dialog
-    createQuitDialog();
 
     // Initialize all buttons as disabled except Play
     document.getElementById('playBtn').disabled = false;
     document.getElementById('pauseBtn').disabled = true;
-    document.getElementById('restartBtn').disabled = true;
     document.getElementById('quitBtn').disabled = true;
     document.getElementById('muteBtn').disabled = true;
 
@@ -290,9 +214,9 @@ function draw() {
             ['↑', 'Rotate'],
             ['↓', 'Soft Drop'],
             ['Space', 'Hard Drop'],
-            ['P', 'Pause/Resume'],
-            ['Enter', 'Start/Restart'],
-            ['Esc', 'Quit']
+            ['Esc', 'Pause/Resume'],
+            ['R', 'Restart (in Pause)'],
+            ['Q', 'Quit (in Pause)']
         ];
 
         for (let i = 0; i < controls.length; i++) {
@@ -460,45 +384,6 @@ function togglePause() {
 }
 
 /**
- * Restarts the game, resetting all game states and scores
- */
-function restartGame() {
-    grid = [];
-    for (let i = 0; i < rows; i++) {
-        grid.push(new Array(cols).fill(0));
-    }
-    
-    clearInterval(dropIntervalId);
-    clearInterval(moveIntervalId);
-    
-    // Reset game states
-    gameState = GameState.PLAYING;
-    currentDirection = 0;
-    isSoftDropActive = false;
-    document.getElementById('pauseBtn').textContent = 'Pause';
-    
-    // Update button states
-    document.getElementById('playBtn').style.display = 'none';
-    document.getElementById('pauseBtn').disabled = false;
-    document.getElementById('restartBtn').disabled = false;
-    document.getElementById('quitBtn').disabled = false;
-    document.getElementById('muteBtn').disabled = false;
-    
-    nextPiece = getRandomPiece();
-    spawnPiece();
-    dropIntervalId = setInterval(() => dropPiece(), getDropSpeed(0));
-    loop();
-    
-    score = 0;
-    level = 1;
-    linesCleared = 0;
-    updateScoreDisplay();
-    
-    // Start the theme music
-    audioManager.playTheme();
-}
-
-/**
  * Spawns a new tetromino piece and updates the preview
  */
 function spawnPiece() {
@@ -620,7 +505,7 @@ function findLowestPosition() {
  * Instantly moves piece to lowest possible position
  */
 function hardDrop() {
-    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || !currentPiece) return;
     
     const startY = currentPiece.y;
     currentPiece.y = findLowestPosition();
@@ -659,13 +544,6 @@ function hardDrop() {
  * @param {KeyboardEvent} event - The keyboard event
  */
 function keyPressed() {
-    if (showingQuitDialog) {
-        if (keyCode === ESCAPE) {
-            hideQuitDialog();
-        }
-        return;
-    }
-
     if (gameState === GameState.INITIAL) {
         if (keyCode === ENTER) {
             startGame();
@@ -675,30 +553,32 @@ function keyPressed() {
     }
     
     if (gameState === GameState.GAME_OVER) {
-        if (keyCode === ENTER) {
-            restartGame();
+        // quit game on escape or enter or space
+        if (keyCode === ESCAPE || keyCode === ENTER || keyCode === 32) {
+            quitGame();
             return;
         }
-        if (keyCode === ESCAPE) {
+        return;
+    }
+
+    if (keyCode === ESCAPE) {
+        togglePause();
+        return;
+    }
+
+    if (gameState === GameState.PAUSED) {
+        if (keyCode === 82) { // 'R' key for restart
+            startGame();
+            return;
+        }
+        if (keyCode === 81) { // 'Q' key for quit
             quitGame();
             return;
         }
         return;
     }
     
-    if (keyCode === ESCAPE) {
-        showQuitDialog();
-        return;
-    }
-
-    if (keyCode === 80) { // 'P' key for pause/resume
-        togglePause();
-        return;
-    }
-    
-    if (gameState === GameState.PAUSED) { // Block all other keys when paused
-        return;
-    }
+    if (gameState !== GameState.PLAYING) return;
     
     if (keyCode === LEFT_ARROW) {
         if (currentDirection !== -1) {
@@ -759,7 +639,7 @@ function keyReleased() {
  * @param {number} dir - Direction (-1 for left, 1 for right)
  */
 function movePiece(dir) {
-    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || !currentPiece) return;
     
     currentPiece.x += dir;
 
@@ -773,7 +653,7 @@ function movePiece(dir) {
  * @returns {boolean} True if piece was moved, false if piece was placed
  */
 function dropPiece() {
-    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || !currentPiece) return;
     
     const previousY = currentPiece.y;
     currentPiece.y++;
@@ -790,7 +670,7 @@ function dropPiece() {
  * Rotates the current piece clockwise
  */
 function rotatePiece() {
-    if (gameState !== GameState.PLAYING || showingQuitDialog) return;
+    if (gameState !== GameState.PLAYING || !currentPiece) return;
     
     const rotated = [];
     
@@ -964,10 +844,15 @@ function startGame() {
     level = 1;
     linesCleared = 0;
     
+    // Reset grid
+    grid = [];
+    for (let i = 0; i < rows; i++) {
+        grid.push(new Array(cols).fill(0));
+    }
+    
     // Enable game control buttons
     document.getElementById('playBtn').style.display = 'none';
     document.getElementById('pauseBtn').disabled = false;
-    document.getElementById('restartBtn').disabled = false;
     document.getElementById('quitBtn').disabled = false;
     document.getElementById('muteBtn').disabled = false;
     
@@ -976,10 +861,9 @@ function startGame() {
     spawnPiece();
     
     // Start the game loop with initial speed
-    dropIntervalId = setInterval(() => dropPiece(), getDropSpeed(0)); // Level 1 speed
+    dropIntervalId = setInterval(() => dropPiece(), getDropSpeed(0));
     
     updateScoreDisplay();
-
     audioManager.playTheme();
 }
 
@@ -1039,7 +923,6 @@ function quitGame() {
     document.getElementById('playBtn').style.display = 'block';
     document.getElementById('playBtn').disabled = false;
     document.getElementById('pauseBtn').disabled = true;
-    document.getElementById('restartBtn').disabled = true;
     document.getElementById('quitBtn').disabled = true;
     document.getElementById('muteBtn').disabled = true;
     document.getElementById('pauseBtn').textContent = 'Pause';
