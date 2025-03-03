@@ -2,22 +2,23 @@ Game State Diagram
 ================
 
 Main States:
------------
-╔═══════════════════╗        Press Play      ╔═══════════════════╗
-║                   ║----------------------->║                   ║
-║      INITIAL      ║                        ║      PLAYING      ║
-║                   ║<-----------------------║                   ║
-╚═══════════════════╝         Quit           ╚═══════════════════╝
-         ^                                         ^     |
-         |                                         |     |
-         |                                 Press P |     | Collision
-         |                                         |     | at spawn
-    Quit |                                         |     |
-         |                  ╔═══════════════════╗  |     |
-         |                  ║                   ║  |     |
-         +<---------------- ║      PAUSED       ║<-+     |
-         |                  ║                   ║        |
-         |                  ╚═══════════════════╝        |
+------------
+╔═══════════════════╗  Press Play            ╔═══════════════════╗
+║                   ║--------------+-------->║                   ║
+║      INITIAL      ║              |         ║      PLAYING      ║
+║                   ║              |         ║                   ║
+╚═══════════════════╝              |         ╚═══════════════════╝
+         ^                         |               ^     |
+         |                 Press R |               |     |
+         |                         |     Press Esc |     | Collision
+         |                         |               |     | at spawn
+         |                         |               |     |
+         |              ╔═══════════════════╗      |     |
+         |              ║                   ║      |     |
+         +<-------------|      PAUSED       |<-----+     |
+         |     Press Q  ║                   ║            |
+         |     or Quit  ╚═══════════════════╝            |
+         |                                               |
          |                                               |
          |                                               |
          |                                               |
@@ -25,9 +26,9 @@ Main States:
          |                                               |
          |                                               v
          |                               ╔═══════════════════╗
-         |                               ║                   ║
+         |                               ║                   ║ 
          +<----------------------------- ║     GAME_OVER     ║
-                   Quit                  ║                   ║
+    Enter/Space/Esc                      ║                   ║
                                          ╚═══════════════════╝
 
 Legend:
@@ -37,17 +38,20 @@ Legend:
 ↺  State preservation
 ⇝  Dialog interaction
 
+State Transitions:
 -----------------
-INITIAL    -> PLAYING:   User input (Play/Enter)
-PLAYING    -> PAUSED:    User input (P key/button)
-PLAYING    -> GAME_OVER: Automatic (collision)
-PAUSED     -> PLAYING:   User input (P key/button)
-GAME_OVER  -> PLAYING:   User input (Enter/Restart)
+INITIAL    -> PLAYING:    User input (Play button/Enter)
+PLAYING    -> PAUSED:     User input (Esc key/Pause button)
+PLAYING    -> GAME_OVER:  Automatic (collision at spawn)
+PAUSED     -> PLAYING:    User input (Esc key/Resume button)
+PAUSED     -> PLAYING:    User input (R key for restart)
+PAUSED     -> INITIAL:    User input (Q key/Quit button)
+GAME_OVER  -> INITIAL:    User input (Enter/Space/Esc)
 
 Notes:
 ------
 1. Game states:
-   INITIAL    - Title screen state (Enter/Play to start)
+   INITIAL    - Title screen state (Play button/Enter to start)
    PLAYING    - Active gameplay with piece control
    PAUSED     - Suspended state with controls display
    GAME_OVER  - End state with restart/quit options
@@ -55,7 +59,7 @@ Notes:
 2. State behaviors:
    - INITIAL:    
      * Shows title screen and game name
-     * Accepts Enter key or Play button
+     * Accepts Play button or Enter key
      * All buttons disabled except Play
    - PLAYING:    
      * Full piece movement and rotation
@@ -64,8 +68,8 @@ Notes:
    - PAUSED:     
      * Game state and timers frozen
      * Shows controls overlay
-     * Only P/Resume and Quit allowed
+     * Only Resume (Esc), Restart (R), and Quit (Q) allowed
    - GAME_OVER:  
      * Final score displayed
-     * Enter to restart, Esc to quit
+     * Enter/Space/Esc to return to initial state
      * Background effects stopped
