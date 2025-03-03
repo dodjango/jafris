@@ -319,7 +319,7 @@ function drawPiece() {
  * Draws a ghost piece showing where the current piece will land
  */
 function drawGhostPiece() {
-    if (!gameState === GameState.PLAYING || gameState === GameState.GAME_OVER || !currentPiece) return;
+    if (gameState === GameState.GAME_OVER || !currentPiece) return;
     
     const originalY = currentPiece.y;
     currentPiece.y = findLowestPosition();
@@ -462,18 +462,6 @@ function drawPreview() {
             }
         }
     }
-}
-
-/**
- * Creates an RGBA color value
- * @param {number} r - Red value (0-255)
- * @param {number} g - Green value (0-255)
- * @param {number} b - Blue value (0-255)
- * @param {number} a - Alpha value (0-1)
- * @returns {p5.Color} Color object
- */
-function rgba(r, g, b, a) {
-    return color(r, g, b, a * 255);
 }
 
 /**
