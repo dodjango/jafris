@@ -194,7 +194,7 @@ function draw() {
 
         // Controls box
         const boxWidth = 300;
-        const boxHeight = 250;
+        const boxHeight = 280;
         const boxX = width/2 - boxWidth/2;
         const boxY = height/2 - boxHeight/2 + 50;
 
